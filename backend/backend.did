@@ -1,0 +1,29 @@
+type Result_1 = 
+ variant {
+   err: text;
+   ok;
+ };
+type Result = 
+ variant {
+   err: text;
+   ok: Item;
+ };
+type ItemInput = 
+ record {
+   description: text;
+   name: text;
+   quantity: nat;
+ };
+type Item = 
+ record {
+   description: text;
+   id: nat;
+   name: text;
+   quantity: nat;
+ };
+service : {
+  createItem: (ItemInput) -> (Result);
+  deleteItem: (nat) -> (Result_1);
+  getAllItems: () -> (vec Item) query;
+  updateItemQuantity: (nat, nat) -> (Result);
+}
