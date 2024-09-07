@@ -96,6 +96,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ open, onClose, onSubmit, initialDat
                 margin="normal"
                 error={!!error}
                 helperText={error?.message}
+                InputProps={{ inputProps: { min: 0 } }}
               />
             )}
           />

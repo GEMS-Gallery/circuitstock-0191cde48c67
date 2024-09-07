@@ -22,6 +22,7 @@ export interface _SERVICE {
   'deleteItem' : ActorMethod<[bigint], Result_1>,
   'getAllItems' : ActorMethod<[], Array<Item>>,
   'updateItem' : ActorMethod<[bigint, ItemInput], Result>,
+  'updateItemQuantity' : ActorMethod<[bigint, bigint], Result>,
 }
 export declare const idlFactory: IDL.InterfaceFactory;
 export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

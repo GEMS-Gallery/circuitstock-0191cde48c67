@@ -26,4 +26,5 @@ service : {
   deleteItem: (nat) -> (Result_1);
   getAllItems: () -> (vec Item) query;
   updateItem: (nat, ItemInput) -> (Result);
+  updateItemQuantity: (nat, nat) -> (Result);
 }

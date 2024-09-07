@@ -66,6 +66,21 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+  const handleUpdateQuantity = async (id: bigint, newQuantity: bigint) => {
+    setLoading(true);
+    try {
+      const result = await backend.updateItemQuantity(id, newQuantity);
+      if ('ok' in result) {
+        await fetchItems();
+      } else {
+        console.error('Error updating item quantity:', result.err);
+      }
+    } catch (error) {
+      console.error('Error updating item quantity:', error);
+    }
+    setLoading(false);
+  };
+
   const handleDeleteItem = async (id: bigint) => {
     setLoading(true);
     try {
@@ -109,6 +124,7 @@ const App: React.FC = () => {
         <ItemTable
           items={items}
           onEditItem={handleEditItem}
+          onUpdateQuantity={handleUpdateQuantity}
           onDeleteItem={handleDeleteItem}
         />
       )}

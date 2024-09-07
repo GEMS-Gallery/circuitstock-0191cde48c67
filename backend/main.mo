@@ -59,6 +59,24 @@ actor {
     }
   };
 
+  public func updateItemQuantity(id: Nat, newQuantity: Nat): async Result.Result<Item, Text> {
+    switch (itemStore.get(id)) {
+      case (null) {
+        #err("Item not found")
+      };
+      case (?item) {
+        let updatedItem = {
+          id = id;
+          name = item.name;
+          description = item.description;
+          quantity = newQuantity;
+        };
+        itemStore.put(id, updatedItem);
+        #ok(updatedItem)
+      };
+    }
+  };
+
   public func deleteItem(id: Nat): async Result.Result<(), Text> {
     switch (itemStore.remove(id)) {
       case (null) {

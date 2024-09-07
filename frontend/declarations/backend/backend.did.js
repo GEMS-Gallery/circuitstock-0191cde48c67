@@ -17,6 +17,7 @@ export const idlFactory = ({ IDL }) => {
     'deleteItem' : IDL.Func([IDL.Nat], [Result_1], []),
     'getAllItems' : IDL.Func([], [IDL.Vec(Item)], ['query']),
     'updateItem' : IDL.Func([IDL.Nat, ItemInput], [Result], []),
+    'updateItemQuantity' : IDL.Func([IDL.Nat, IDL.Nat], [Result], []),
   });
 };
 export const init = ({ IDL }) => { return []; };
