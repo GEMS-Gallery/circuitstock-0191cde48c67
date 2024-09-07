@@ -2,6 +2,7 @@ import React from 'react';
 import DataTable from 'react-data-table-component';
 import { Button, IconButton } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 type Item = {
   id: bigint;
@@ -12,11 +13,11 @@ type Item = {
 
 type ItemTableProps = {
   items: Item[];
-  onUpdateQuantity: (id: bigint, newQuantity: bigint) => void;
+  onEditItem: (item: Item) => void;
   onDeleteItem: (id: bigint) => void;
 };
 
-const ItemTable: React.FC<ItemTableProps> = ({ items, onUpdateQuantity, onDeleteItem }) => {
+const ItemTable: React.FC<ItemTableProps> = ({ items, onEditItem, onDeleteItem }) => {
   const columns = [
     { name: 'ID', selector: (row: Item) => Number(row.id), sortable: true },
     { name: 'Name', selector: (row: Item) => row.name, sortable: true },
@@ -26,13 +27,13 @@ const ItemTable: React.FC<ItemTableProps> = ({ items, onUpdateQuantity, onDelete
       name: 'Actions',
       cell: (row: Item) => (
         <>
-          <Button
-            variant="outlined"
+          <IconButton
+            color="primary"
+            onClick={() => onEditItem(row)}
             size="small"
-            onClick={() => onUpdateQuantity(row.id, row.quantity)}
           >
-            Update
-          </Button>
+            <EditIcon />
+          </IconButton>
           <IconButton
             color="secondary"
             onClick={() => onDeleteItem(row.id)}

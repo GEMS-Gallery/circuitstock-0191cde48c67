@@ -1,28 +1,54 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Dialog, DialogTitle, DialogContent, DialogActions, TextField, Button } from '@mui/material';
+
+type Item = {
+  id: bigint;
+  name: string;
+  description: string;
+  quantity: bigint;
+};
 
 type ItemFormProps = {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; description: string; quantity: bigint }) => void;
+  onSubmit: (id: bigint | undefined, data: Omit<Item, 'id'>) => void;
+  initialData?: Item | null;
 };
 
-const ItemForm: React.FC<ItemFormProps> = ({ open, onClose, onSubmit }) => {
+const ItemForm: React.FC<ItemFormProps> = ({ open, onClose, onSubmit, initialData }) => {
   const { control, handleSubmit, reset } = useForm();
 
+  useEffect(() => {
+    if (initialData) {
+      reset({
+        name: initialData.name,
+        description: initialData.description,
+        quantity: Number(initialData.quantity),
+      });
+    } else {
+      reset({
+        name: '',
+        description: '',
+        quantity: '',
+      });
+    }
+  }, [initialData, reset]);
+
   const onSubmitForm = (data: any) => {
-    onSubmit({
-      name: data.name,
-      description: data.description,
-      quantity: BigInt(data.quantity),
-    });
-    reset();
+    onSubmit(
+      initialData ? initialData.id : undefined,
+      {
+        name: data.name,
+        description: data.description,
+        quantity: BigInt(data.quantity),
+      }
+    );
   };
 
   return (
     <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Add New Item</DialogTitle>
+      <DialogTitle>{initialData ? 'Edit Item' : 'Add New Item'}</DialogTitle>
       <form onSubmit={handleSubmit(onSubmitForm)}>
         <DialogContent>
           <Controller
@@ -77,7 +103,7 @@ const ItemForm: React.FC<ItemFormProps> = ({ open, onClose, onSubmit }) => {
         <DialogActions>
           <Button onClick={onClose}>Cancel</Button>
           <Button type="submit" variant="contained" color="primary">
-            Add Item
+            {initialData ? 'Update' : 'Add'} Item
           </Button>
         </DialogActions>
       </form>

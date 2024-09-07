@@ -41,17 +41,17 @@ actor {
     Iter.toArray(Iter.map(itemStore.entries(), func (entry: (Nat, Item)): Item { entry.1 }))
   };
 
-  public func updateItemQuantity(id: Nat, newQuantity: Nat): async Result.Result<Item, Text> {
+  public func updateItem(id: Nat, input: ItemInput): async Result.Result<Item, Text> {
     switch (itemStore.get(id)) {
       case (null) {
         #err("Item not found")
       };
       case (?item) {
         let updatedItem = {
-          id = item.id;
-          name = item.name;
-          description = item.description;
-          quantity = newQuantity;
+          id = id;
+          name = input.name;
+          description = input.description;
+          quantity = input.quantity;
         };
         itemStore.put(id, updatedItem);
         #ok(updatedItem)

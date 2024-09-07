@@ -16,6 +16,7 @@ const App: React.FC = () => {
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [openForm, setOpenForm] = useState(false);
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
 
   const fetchItems = async () => {
     setLoading(true);
@@ -48,17 +49,19 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
-  const handleUpdateQuantity = async (id: bigint, newQuantity: bigint) => {
+  const handleUpdateItem = async (id: bigint, updatedItem: Omit<Item, 'id'>) => {
     setLoading(true);
     try {
-      const result = await backend.updateItemQuantity(id, newQuantity);
+      const result = await backend.updateItem(id, updatedItem);
       if ('ok' in result) {
         await fetchItems();
+        setOpenForm(false);
+        setEditingItem(null);
       } else {
-        console.error('Error updating item quantity:', result.err);
+        console.error('Error updating item:', result.err);
       }
     } catch (error) {
-      console.error('Error updating item quantity:', error);
+      console.error('Error updating item:', error);
     }
     setLoading(false);
   };
@@ -78,6 +81,11 @@ const App: React.FC = () => {
     setLoading(false);
   };
 
+  const handleEditItem = (item: Item) => {
+    setEditingItem(item);
+    setOpenForm(true);
+  };
+
   return (
     <Container maxWidth="lg">
       <Typography variant="h2" component="h1" gutterBottom>
@@ -87,7 +95,10 @@ const App: React.FC = () => {
         variant="contained"
         color="primary"
         startIcon={<AddIcon />}
-        onClick={() => setOpenForm(true)}
+        onClick={() => {
+          setEditingItem(null);
+          setOpenForm(true);
+        }}
         style={{ marginBottom: '1rem' }}
       >
         Add New Item
@@ -97,14 +108,18 @@ const App: React.FC = () => {
       ) : (
         <ItemTable
           items={items}
-          onUpdateQuantity={handleUpdateQuantity}
+          onEditItem={handleEditItem}
           onDeleteItem={handleDeleteItem}
         />
       )}
       <ItemForm
         open={openForm}
-        onClose={() => setOpenForm(false)}
-        onSubmit={handleCreateItem}
+        onClose={() => {
+          setOpenForm(false);
+          setEditingItem(null);
+        }}
+        onSubmit={editingItem ? handleUpdateItem : handleCreateItem}
+        initialData={editingItem}
       />
     </Container>
   );
